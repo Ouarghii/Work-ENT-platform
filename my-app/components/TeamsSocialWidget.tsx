@@ -601,54 +601,51 @@ export function TeamsSocialWidget({
         isFullscreen ? "fixed inset-0 z-50 rounded-none border-0" : "relative"
       }`}
     >
-      <div className="w-20 bg-[#1B2031] border-r border-[#2D3140] flex flex-col items-center py-4 space-y-3 shrink-0">
-        <div className="flex flex-col items-center gap-2">
+      <div className="w-16 bg-[#1B2031] border-r border-[#2D3140] flex flex-col items-center py-3 space-y-2 shrink-0">
+        <div className="flex flex-col items-center gap-1">
           <div className="w-12 h-12 rounded-3xl bg-[#4F4AA9] flex items-center justify-center text-white text-lg font-bold shadow-lg">
             T
           </div>
-          <p className="text-[10px] uppercase tracking-[0.24em] text-slate-400">
+          <p className="text-[9px] uppercase tracking-[0.24em] text-slate-400">
             Teams
           </p>
         </div>
 
-        <div className="w-full flex-1 flex flex-col items-center gap-2 pt-2">
+        <div className="w-full flex-1 flex flex-col items-center gap-1 pt-2">
           <button
             onClick={() => setActiveTab("chat")}
             title="Chat"
-            className={`w-full rounded-3xl px-2 py-3 text-[10px] font-semibold transition ${
+            className={`w-full rounded-3xl py-3 text-lg transition ${
               activeTab === "chat"
                 ? "bg-[#373F66] text-white shadow-lg"
                 : "text-slate-400 hover:bg-[#262D45] hover:text-white"
             }`}
           >
             💬
-            <span className="block pt-1 text-[9px]">Chat</span>
           </button>
 
           <button
             onClick={() => setActiveTab("calendar")}
             title="Calendrier"
-            className={`w-full rounded-3xl px-2 py-3 text-[10px] font-semibold transition ${
+            className={`w-full rounded-3xl py-3 text-lg transition ${
               activeTab === "calendar"
                 ? "bg-[#373F66] text-white shadow-lg"
                 : "text-slate-400 hover:bg-[#262D45] hover:text-white"
             }`}
           >
             📅
-            <span className="block pt-1 text-[9px]">Agenda</span>
           </button>
 
           <button
             onClick={() => setActiveTab("meetings")}
             title="Réunions"
-            className={`w-full rounded-3xl px-2 py-3 text-[10px] font-semibold transition ${
+            className={`w-full rounded-3xl py-3 text-lg transition ${
               activeTab === "meetings"
                 ? "bg-[#373F66] text-white shadow-lg"
                 : "text-slate-400 hover:bg-[#262D45] hover:text-white"
             }`}
           >
             📹
-            <span className="block pt-1 text-[9px]">Appels</span>
           </button>
         </div>
 
@@ -667,9 +664,10 @@ export function TeamsSocialWidget({
           <button
             onClick={onToggleFullscreen}
             title={isFullscreen ? "Réduire" : "Plein écran"}
-            className="text-slate-400 hover:text-white text-xs"
+            className="inline-flex items-center gap-2 rounded-full bg-[#25242C] border border-[#3B3A41] px-3 py-2 text-xs font-semibold text-slate-200 transition hover:bg-[#2F2D39]"
           >
-            {isFullscreen ? "✕" : "⛶"}
+            {isFullscreen ? "Quitter" : "Plein écran"}
+            <span>{isFullscreen ? "✕" : "⛶"}</span>
           </button>
         </div>
       </div>

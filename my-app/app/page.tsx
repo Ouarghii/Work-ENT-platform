@@ -13,6 +13,7 @@ const ACTIVITY_TYPES = [
   { id: "relaxation", name: "Relaxation", icon: "🧘" },
   { id: "music", name: "Music", icon: "🎵" },
   { id: "busywork", name: "Busywork", icon: "💼" },
+  { id: "shop", name: "Shop", icon: "🛒" },
 ];
 
 export default function SelectionPage() {
