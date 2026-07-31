@@ -11,7 +11,12 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/zoom_dashboard";
 
 // --- Middleware ---
-app.use(cors({ origin: "http://localhost:3001", credentials: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:3001", "http://localhost:3000"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // --- MongoDB Connection ---
@@ -33,8 +38,26 @@ const messageSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
 });
 
+const eventSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  time: { type: String, required: true },
+  date: { type: String, required: true },
+  meetingId: { type: String, required: true },
+  createdBy: { type: String, default: "system" },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const meetingMessageSchema = new mongoose.Schema({
+  meetingId: { type: String, required: true },
+  sender: { type: String, required: true },
+  text: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+});
+
 const User = mongoose.model("User", userSchema);
 const Message = mongoose.model("Message", messageSchema);
+const Event = mongoose.model("Event", eventSchema);
+const MeetingMessage = mongoose.model("MeetingMessage", meetingMessageSchema);
 
 // ----------------------------------------------------
 // 1. AUTHENTICATION ROUTES (Register & Login)
@@ -122,7 +145,75 @@ app.post("/api/messages", async (req, res) => {
 });
 
 // ----------------------------------------------------
-// 3. ZOOM SDK TOKEN GENERATOR
+// 3. CALENDAR / MEETING BACKEND ROUTES
+// ----------------------------------------------------
+
+app.get("/api/events", async (req, res) => {
+  try {
+    const { date } = req.query;
+    const filter = {};
+    if (date) {
+      filter.date = date;
+    }
+    const events = await Event.find(filter).sort({ date: 1, time: 1 });
+    return res.json(events);
+  } catch (err) {
+    console.error("Events Load Error:", err);
+    return res.status(500).json({ error: "Erreur de chargement du calendrier" });
+  }
+});
+
+app.post("/api/events", async (req, res) => {
+  try {
+    const { title, time, date, meetingId, createdBy } = req.body;
+    if (!title || !time || !date) {
+      return res.status(400).json({ error: "Titre, heure et date requis." });
+    }
+
+    const newEvent = await Event.create({
+      title,
+      time,
+      date,
+      meetingId: meetingId || Math.floor(100000000 + Math.random() * 900000000).toString(),
+      createdBy: createdBy || "system",
+    });
+
+    return res.status(201).json(newEvent);
+  } catch (err) {
+    console.error("Create Event Error:", err);
+    return res.status(500).json({ error: "Erreur lors de la création de l'événement." });
+  }
+});
+
+app.get("/api/meetings/:meetingId/messages", async (req, res) => {
+  try {
+    const { meetingId } = req.params;
+    const messages = await MeetingMessage.find({ meetingId }).sort({ timestamp: 1 });
+    return res.json(messages);
+  } catch (err) {
+    console.error("Meeting Messages Load Error:", err);
+    return res.status(500).json({ error: "Erreur de chargement des messages de réunion" });
+  }
+});
+
+app.post("/api/meetings/:meetingId/messages", async (req, res) => {
+  try {
+    const { meetingId } = req.params;
+    const { sender, text } = req.body;
+    if (!sender || !text) {
+      return res.status(400).json({ error: "Données manquantes" });
+    }
+
+    const newMeetingMessage = await MeetingMessage.create({ meetingId, sender, text });
+    return res.status(201).json(newMeetingMessage);
+  } catch (err) {
+    console.error("Create Meeting Message Error:", err);
+    return res.status(500).json({ error: "Erreur lors de l'envoi du message de réunion." });
+  }
+});
+
+// ----------------------------------------------------
+// 4. ZOOM SDK TOKEN GENERATOR
 // ----------------------------------------------------
 
 app.post("/api/zoom/token", (req, res) => {
