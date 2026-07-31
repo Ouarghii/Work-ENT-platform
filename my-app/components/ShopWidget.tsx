@@ -360,7 +360,7 @@ export function ShopWidget() {
       {!shopUser ? (
         <div className="rounded-[28px] border border-[#1F2D4D] bg-[#081124] p-5">
           {authError && (
-            <div className="rounded-3xl border border-red-600/30 bg-red-600/10 px-4 py-3 text-sm text-red-200">
+            <div className="mb-4 rounded-3xl border border-red-600/30 bg-red-600/10 px-4 py-3 text-sm text-red-200">
               {authError}
             </div>
           )}
@@ -456,38 +456,24 @@ export function ShopWidget() {
         ) : filteredProducts.length === 0 ? (
           <div className="rounded-3xl bg-[#07131F] p-6 text-center text-slate-400">Aucun produit trouvé.</div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredProducts.map((product) => (
-              <div key={product._id} className="group overflow-hidden rounded-[28px] border border-[#162043] bg-[#081022] transition hover:border-[#5F5CD9]">
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
+              <div key={product._id} className="group rounded-[28px] border border-[#162043] bg-[#081022] p-4 transition hover:border-[#5F5CD9]">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{product.category}</p>
+                    <h3 className="mt-2 text-lg font-semibold text-white">{product.name}</h3>
+                  </div>
+                  <div className="rounded-3xl bg-[#1B2753] px-3 py-2 text-sm text-[#A6B3FF]">{product.price.toFixed(2)}€</div>
                 </div>
-                <div className="p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{product.category}</p>
-                      <h3 className="mt-2 text-lg font-semibold text-white">{product.name}</h3>
-                    </div>
-                    <div className="rounded-3xl bg-[#1B2753] px-3 py-2 text-sm text-[#A6B3FF]">{product.price.toFixed(2)}€</div>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-slate-400">{product.description}</p>
-                  <div className="mt-4 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-[#151D39] px-3 py-2 text-xs text-slate-400">Stock : {product.stock}</span>
-                    {product.tags.slice(0, 2).map((tag) => (
-                      <span key={tag} className="rounded-full bg-[#111B33] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-slate-400">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                <p className="mt-3 text-sm leading-6 text-slate-400">{product.description}</p>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="rounded-full bg-[#151D39] px-3 py-2 text-xs text-slate-400">Stock : {product.stock}</span>
                   <button
                     onClick={() => addToCart(product)}
-                    className="mt-4 w-full rounded-3xl bg-gradient-to-r from-[#5F5CD9] to-[#3F65D9] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110"
+                    className="rounded-3xl bg-gradient-to-r from-[#5F5CD9] to-[#3F65D9] px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110"
                   >
-                    Ajouter au panier
+                    Ajouter
                   </button>
                 </div>
               </div>
@@ -516,15 +502,10 @@ export function ShopWidget() {
             cartItems.map((item) => (
               <div key={item.product._id} className="rounded-3xl border border-[#122145] bg-[#0B1322] p-4">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex gap-4">
-                    <div className="h-20 w-20 overflow-hidden rounded-3xl bg-[#111728]">
-                      <img src={item.product.image} alt={item.product.name} className="h-full w-full object-cover" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-white">{item.product.name}</p>
-                      <p className="mt-1 text-xs text-slate-500">{item.product.category}</p>
-                      <p className="mt-2 text-sm text-slate-400">{item.product.description}</p>
-                    </div>
+                  <div>
+                    <p className="font-semibold text-white">{item.product.name}</p>
+                    <p className="mt-1 text-xs text-slate-500">{item.product.category}</p>
+                    <p className="mt-2 text-sm text-slate-400">{item.product.description}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-semibold text-[#A6B3FF]">{(item.quantity * item.product.price).toFixed(2)}€</p>
@@ -654,7 +635,7 @@ export function ShopWidget() {
     </div>
   );
 
-  const fullscreenContent = (
+  const mainWidgetContent = (
     <div className="flex h-full flex-col overflow-hidden">
       {renderSectionNav}
       <div className="flex-1 overflow-y-auto rounded-[28px] border border-[#1E2A4A] bg-[#0C1322] p-5">
@@ -670,500 +651,30 @@ export function ShopWidget() {
   return (
     <div
       className={`h-full rounded-[30px] border border-[#2D3140] bg-[#0B1222] p-5 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.85)] text-slate-200 overflow-hidden flex flex-col transition-all duration-300 ${
-        isFullscreen ? "fixed inset-0 z-50 rounded-none border-0 p-8" : "relative"
+        isFullscreen ? "fixed inset-0 z-50 rounded-none border-0 p-8" : "relative min-h-[600px]"
       }`}
     >
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-[0.32em] text-slate-500">Boutique</p>
-          <h2 className="mt-2 text-2xl font-semibold text-white">Espace e-commerce</h2>
-          <p className="mt-1 text-sm text-slate-400 max-w-2xl">
-            Catalogue complet, filtres produits, panier sécurisé et paiement en direct.
-          </p>
+          <h2 className="text-2xl font-semibold text-white">Espace e-commerce</h2>
         </div>
-        <div className="flex flex-col gap-3 sm:items-end">
-          <div className="inline-flex items-center gap-2 rounded-3xl bg-[#111926] px-4 py-2 text-sm text-slate-300">
-            <span className="text-xs uppercase tracking-[0.32em] text-slate-500">Statut</span>
-            <span>{shopUser ? "Authentifié" : "Identifiez-vous"}</span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-3xl bg-[#111926] px-4 py-2 text-sm font-medium text-slate-200 shadow-inner">
-              {shopUser ? `Connecté : ${shopUser.username}` : "Visiteur"}
-            </span>
-            <button
-              onClick={() => setIsFullscreen((prev) => !prev)}
-              title={isFullscreen ? "Réduire" : "Plein écran"}
-              className="inline-flex items-center gap-2 rounded-full bg-[#25242C] border border-[#3B3A41] px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-[#2F2D39]"
-            >
-              {isFullscreen ? "Quitter" : "Plein écran"}
-              <span>{isFullscreen ? "✕" : "⛶"}</span>
-            </button>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="rounded-3xl bg-[#111926] px-4 py-2 text-sm font-medium text-slate-200 shadow-inner">
+            {shopUser ? `Connecté : ${shopUser.username}` : "Visiteur"}
+          </span>
+          <button
+            onClick={() => setIsFullscreen((prev) => !prev)}
+            title={isFullscreen ? "Réduire" : "Plein écran"}
+            className="inline-flex items-center gap-2 rounded-full bg-[#25242C] border border-[#3B3A41] px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-[#2F2D39]"
+          >
+            {isFullscreen ? "Quitter" : "Plein écran"}
+            <span>{isFullscreen ? "✕" : "⛶"}</span>
+          </button>
         </div>
       </div>
 
-      {isFullscreen ? fullscreenContent : (
-        <>
-          <div className="block sm:hidden rounded-[40px] border border-[#1E2A4A] bg-[#091223] p-4 shadow-[0_25px_80px_-30px_rgba(0,0,0,0.8)]">
-            <div className="mb-4 flex items-center justify-between gap-3 rounded-3xl bg-[#0B1426] p-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Boutique</p>
-                <h2 className="text-xl font-semibold text-white">Shop mobile</h2>
-              </div>
-              <button
-                onClick={() => setIsFullscreen(true)}
-                title="Plein écran"
-                className="inline-flex items-center gap-2 rounded-full bg-[#1C2D55] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#374c8d]"
-              >
-                <span>⛶</span>
-                <span>Plein écran</span>
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="rounded-[32px] border border-[#122248] bg-[#081323] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Statut</p>
-                    <p className="text-sm font-semibold text-white">{shopUser ? shopUser.username : "Visiteur"}</p>
-                  </div>
-                  <span className="rounded-full bg-[#111B33] px-3 py-2 text-xs text-slate-300">
-                    {shopUser ? "Authentifié" : "Invité"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="rounded-[32px] border border-[#122248] bg-[#081323] p-4">
-                <input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Rechercher"
-                  className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                />
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                  >
-                    {categories.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={sortOption}
-                    onChange={(e) => setSortOption(e.target.value as any)}
-                    className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                  >
-                    <option value="latest">Nouveauté</option>
-                    <option value="priceAsc">Prix ↑</option>
-                    <option value="priceDesc">Prix ↓</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="rounded-[32px] border border-[#122248] bg-[#081323] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Panier</p>
-                    <p className="text-lg font-semibold text-white">{cartItems.length} articles</p>
-                  </div>
-                  <span className="rounded-full bg-[#111B33] px-3 py-2 text-xs text-slate-300">{cartTotal.toFixed(2)}€</span>
-                </div>
-              </div>
-
-              <div className="rounded-[32px] border border-[#122248] bg-[#081323] p-4">
-                {isProductsLoading ? (
-                  <p className="text-sm text-slate-400">Chargement des produits...</p>
-                ) : filteredProducts.length === 0 ? (
-                  <div className="rounded-3xl bg-[#07131F] p-6 text-center text-slate-400">Aucun produit trouvé.</div>
-                ) : (
-                  <div className="space-y-3">
-                    {filteredProducts.slice(0, 4).map((product) => (
-                      <div key={product._id} className="overflow-hidden rounded-[28px] border border-[#162043] bg-[#081022]">
-                        <div className="relative h-40 overflow-hidden">
-                          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-                        </div>
-                        <div className="p-4">
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">{product.category}</p>
-                              <h3 className="mt-2 text-base font-semibold text-white">{product.name}</h3>
-                            </div>
-                            <span className="rounded-3xl bg-[#1B2753] px-3 py-2 text-sm text-[#A6B3FF]">{product.price.toFixed(2)}€</span>
-                          </div>
-                          <p className="mt-3 text-sm leading-6 text-slate-400">{product.description}</p>
-                          <button
-                            onClick={() => addToCart(product)}
-                            className="mt-4 w-full rounded-3xl bg-gradient-to-r from-[#5F5CD9] to-[#3F65D9] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110"
-                          >
-                            Ajouter
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="hidden sm:block grid grid-cols-1 xl:grid-cols-[1.5fr_1fr] gap-5 flex-1 overflow-hidden">
-            <div className="space-y-5 overflow-hidden rounded-[28px] border border-[#1E2A4A] bg-[#0C1322] p-5">
-              <div className="grid gap-3 md:grid-cols-[1.5fr_0.8fr]">
-                <div className="rounded-3xl border border-[#1F2D4D] bg-[#091224] p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm font-semibold text-white">Recherche de produits</p>
-                      <p className="text-xs text-slate-500">
-                        Filtrez par catégorie, prix et popularité.
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <button
-                        onClick={() => setIsRegisterMode(!isRegisterMode)}
-                        className="rounded-3xl bg-[#223077] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#2E4BB6]"
-                      >
-                        {isRegisterMode ? "Mode connexion" : "Mode inscription"}
-                      </button>
-                    </div>
-                  </div>
-
-                  {!shopUser && (
-                    <form onSubmit={handleAuthSubmit} className="mt-4 space-y-3">
-                      {authError && (
-                        <div className="rounded-3xl border border-red-600/30 bg-red-600/10 px-4 py-3 text-sm text-red-200">
-                          {authError}
-                        </div>
-                      )}
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <input
-                          value={authUsername}
-                          onChange={(e) => setAuthUsername(e.target.value)}
-                          placeholder="Nom d'utilisateur"
-                          className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                        />
-                        <input
-                          type="password"
-                          value={authPassword}
-                          onChange={(e) => setAuthPassword(e.target.value)}
-                          placeholder="Mot de passe"
-                          className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full rounded-3xl bg-gradient-to-r from-[#5F5CD9] to-[#3F65D9] px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 disabled:opacity-60"
-                        disabled={isAuthLoading}
-                      >
-                        {isAuthLoading
-                          ? "Chargement..."
-                          : isRegisterMode
-                          ? "Créer un compte"
-                          : "Se connecter"}
-                      </button>
-                    </form>
-                  )}
-                </div>
-
-                <div className="rounded-3xl border border-[#1F2D4D] bg-[#091224] p-4">
-                  <div className="flex flex-col gap-3">
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Rechercher un produit"
-                        className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                      />
-                      <select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                      >
-                        {categories.map((category) => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      <input
-                        type="number"
-                        min={0}
-                        value={minPrice}
-                        onChange={(e) => setMinPrice(Number(e.target.value))}
-                        className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                        placeholder="Min €"
-                      />
-                      <input
-                        type="number"
-                        min={0}
-                        value={maxPrice}
-                        onChange={(e) => setMaxPrice(Number(e.target.value))}
-                        className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                        placeholder="Max €"
-                      />
-                      <select
-                        value={sortOption}
-                        onChange={(e) => setSortOption(e.target.value as any)}
-                        className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                      >
-                        <option value="latest">Trier par nouveauté</option>
-                        <option value="priceAsc">Prix ascendant</option>
-                        <option value="priceDesc">Prix descendant</option>
-                      </select>
-                    </div>
-
-                    <div className="rounded-3xl border border-[#22335A] bg-[#081124] p-4 text-sm text-slate-300">
-                      <p className="font-medium text-white">Filtres actifs</p>
-                      <p className="mt-2 text-xs text-slate-500">
-                        Catégorie : {selectedCategory}, Prix entre {minPrice}€ et {maxPrice}€.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3 overflow-hidden rounded-[28px] border border-[#1F2D4D] bg-[#081124] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Etat de la boutique</p>
-                    <p className="text-lg font-semibold text-white">{filteredProducts.length} produits</p>
-                  </div>
-                  <div className="rounded-3xl bg-[#111A34] px-4 py-2 text-sm text-slate-300">
-                    {shopUser ? "Compte actif" : "Visiteur"}
-                  </div>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-3xl border border-[#22325A] bg-[#0B1121] p-4">
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Panier</p>
-                    <p className="mt-2 text-2xl font-semibold text-white">{cartItems.length} articles</p>
-                  </div>
-                  <div className="rounded-3xl border border-[#22325A] bg-[#0B1121] p-4">
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-500">Total estimé</p>
-                    <p className="mt-2 text-2xl font-semibold text-white">{cartTotal.toFixed(2)}€</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="overflow-hidden rounded-[28px] border border-[#1F2D4D] bg-[#081124] p-4">
-                <p className="text-sm font-semibold text-white">Produits populaires</p>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {filteredProducts.slice(0, 2).map((product) => (
-                    <div key={product._id} className="overflow-hidden rounded-3xl bg-[#0D1628] p-0 shadow-inner">
-                      <div className="h-36 overflow-hidden bg-[#081123]">
-                        <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-                      </div>
-                      <div className="p-4">
-                        <p className="font-semibold text-white">{product.name}</p>
-                        <p className="mt-2 text-xs text-slate-500">{product.category}</p>
-                        <p className="mt-3 text-xl font-semibold text-[#A6B3FF]">{product.price.toFixed(2)}€</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-5 overflow-hidden rounded-[28px] border border-[#1E2A4A] bg-[#091123] p-5">
-              <div className="rounded-3xl border border-[#122144] bg-[#0A1322] p-4 shadow-inner">
-                <p className="text-sm font-semibold text-white">Catalogue de produits</p>
-                <p className="mt-2 text-xs text-slate-500">Ajoutez un produit au panier pour le valider.</p>
-              </div>
-
-              <div className="grid gap-4 overflow-y-auto custom-scrollbar" style={{ maxHeight: "44rem" }}>
-                {isProductsLoading ? (
-                  <div className="rounded-3xl bg-[#07131F] p-6 text-center text-slate-400">Chargement des produits...</div>
-                ) : filteredProducts.length === 0 ? (
-                  <div className="rounded-3xl bg-[#07131F] p-6 text-center text-slate-400">Aucun produit trouvé.</div>
-                ) : (
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {filteredProducts.map((product) => (
-                      <div key={product._id} className="group overflow-hidden rounded-[28px] border border-[#162043] bg-[#081022] transition hover:border-[#5F5CD9]">
-                        <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                          />
-                        </div>
-                        <div className="p-4">
-                          <div className="flex items-center justify-between gap-3">
-                            <div>
-                              <p className="text-sm uppercase tracking-[0.3em] text-slate-500">{product.category}</p>
-                              <h3 className="mt-2 text-lg font-semibold text-white">{product.name}</h3>
-                            </div>
-                            <div className="rounded-3xl bg-[#1B2753] px-3 py-2 text-sm text-[#A6B3FF]">{product.price.toFixed(2)}€</div>
-                          </div>
-                          <p className="mt-3 text-sm leading-6 text-slate-400">{product.description}</p>
-                          <div className="mt-4 flex flex-wrap items-center gap-2">
-                            <span className="rounded-full bg-[#151D39] px-3 py-2 text-xs text-slate-400">Stock : {product.stock}</span>
-                            {product.tags.slice(0, 2).map((tag) => (
-                              <span key={tag} className="rounded-full bg-[#111B33] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-slate-400">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          <button
-                            onClick={() => addToCart(product)}
-                            className="mt-4 w-full rounded-3xl bg-gradient-to-r from-[#5F5CD9] to-[#3F65D9] px-4 py-3 text-sm font-semibold text-white transition hover:brightness-110"
-                          >
-                            Ajouter au panier
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5 grid gap-5 lg:grid-cols-[1.4fr_0.8fr]">
-            <div className="rounded-[28px] border border-[#1E2A4A] bg-[#091123] p-5">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-semibold text-white">Panier</p>
-                  <p className="mt-1 text-xs text-slate-500">Contrôlez votre commande avant paiement.</p>
-                </div>
-                <span className="rounded-full bg-[#111B33] px-3 py-2 text-xs text-slate-400">{cartItems.length} articles</span>
-              </div>
-
-              <div className="mt-5 space-y-3">
-                {cartItems.length === 0 ? (
-                  <div className="rounded-3xl bg-[#07131F] p-6 text-center text-slate-400">Votre panier est vide.</div>
-                ) : (
-                  cartItems.map((item) => (
-                    <div key={item.product._id} className="rounded-3xl border border-[#122145] bg-[#0B1322] p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex gap-4">
-                          <div className="h-20 w-20 overflow-hidden rounded-3xl bg-[#111728]">
-                            <img src={item.product.image} alt={item.product.name} className="h-full w-full object-cover" />
-                          </div>
-                          <div>
-                            <p className="font-semibold text-white">{item.product.name}</p>
-                            <p className="mt-1 text-xs text-slate-500">{item.product.category}</p>
-                            <p className="mt-2 text-sm text-slate-400">{item.product.description}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg font-semibold text-[#A6B3FF]">{(item.quantity * item.product.price).toFixed(2)}€</p>
-                          <p className="text-xs text-slate-500">{item.product.price.toFixed(2)}€ / unité</p>
-                        </div>
-                      </div>
-                      <div className="mt-4 flex items-center gap-2">
-                        <button
-                          onClick={() => updateCartQuantity(item.product._id, Math.max(1, item.quantity - 1))}
-                          className="rounded-full bg-[#12214B] px-3 py-2 text-white"
-                        >
-                          -
-                        </button>
-                        <span className="min-w-[2rem] text-center text-sm font-semibold text-white">{item.quantity}</span>
-                        <button
-                          onClick={() => updateCartQuantity(item.product._id, item.quantity + 1)}
-                          className="rounded-full bg-[#12214B] px-3 py-2 text-white"
-                        >
-                          +
-                        </button>
-                        <button
-                          onClick={() => removeFromCart(item.product._id)}
-                          className="ml-auto rounded-3xl bg-[#2D1C3A] px-3 py-2 text-xs text-slate-300"
-                        >
-                          Supprimer
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            <div className="rounded-[28px] border border-[#1E2A4A] bg-[#091123] p-5">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-white">Paiement & livraison</p>
-                <span className="rounded-full bg-[#111B33] px-3 py-2 text-xs text-slate-400">{cartTotal.toFixed(2)}€</span>
-              </div>
-
-              <div className="mt-5 space-y-4">
-                <input
-                  value={checkoutInfo.shippingName}
-                  onChange={(e) => setCheckoutInfo({ ...checkoutInfo, shippingName: e.target.value })}
-                  placeholder="Nom complet"
-                  className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                />
-                <input
-                  value={checkoutInfo.shippingAddress}
-                  onChange={(e) => setCheckoutInfo({ ...checkoutInfo, shippingAddress: e.target.value })}
-                  placeholder="Adresse de livraison"
-                  className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                />
-                <input
-                  value={checkoutInfo.paymentCard}
-                  onChange={(e) => setCheckoutInfo({ ...checkoutInfo, paymentCard: e.target.value })}
-                  placeholder="Numéro de carte"
-                  className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                />
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <input
-                    value={checkoutInfo.paymentExpiry}
-                    onChange={(e) => setCheckoutInfo({ ...checkoutInfo, paymentExpiry: e.target.value })}
-                    placeholder="MM/AA"
-                    className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                  />
-                  <input
-                    value={checkoutInfo.paymentCvv}
-                    onChange={(e) => setCheckoutInfo({ ...checkoutInfo, paymentCvv: e.target.value })}
-                    placeholder="CVV"
-                    className="w-full rounded-3xl border border-[#22335A] bg-[#071125] px-4 py-3 text-sm text-white outline-none focus:border-[#5F5CD9]"
-                  />
-                </div>
-                {checkoutError && (
-                  <div className="rounded-3xl border border-red-600/30 bg-red-600/10 px-4 py-3 text-sm text-red-200">
-                    {checkoutError}
-                  </div>
-                )}
-                {checkoutSuccess && (
-                  <div className="rounded-3xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
-                    {checkoutSuccess}
-                  </div>
-                )}
-                <button
-                  onClick={handleCheckout}
-                  className="w-full rounded-3xl bg-gradient-to-r from-[#5F5CD9] to-[#3F65D9] px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 disabled:opacity-60"
-                  disabled={isCheckoutLoading || cartItems.length === 0}
-                >
-                  {isCheckoutLoading ? "Traitement..." : "Payer maintenant"}
-                </button>
-              </div>
-
-              <div className="mt-6 rounded-3xl border border-[#122144] bg-[#0B1322] p-4 text-sm text-slate-400">
-                <p className="font-semibold text-white">Historique des commandes</p>
-                <div className="mt-3 space-y-3">
-                  {orders.length === 0 ? (
-                    <p className="text-slate-500">Aucune commande pour le moment.</p>
-                  ) : (
-                    orders.slice(0, 3).map((order) => (
-                      <div key={order._id} className="rounded-3xl border border-[#122144] bg-[#071025] p-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="font-semibold text-white">Commande #{order._id.slice(-6)}</p>
-                          <span className="text-xs text-slate-500">{order.status}</span>
-                        </div>
-                        <p className="mt-1 text-xs text-slate-400">{new Date(order.createdAt).toLocaleDateString()}</p>
-                        <p className="mt-2 text-sm text-[#A6B3FF]">Total : {order.total.toFixed(2)}€</p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      {mainWidgetContent}
     </div>
   );
 }
